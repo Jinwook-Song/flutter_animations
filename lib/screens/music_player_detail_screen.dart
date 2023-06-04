@@ -9,7 +9,19 @@ class MusicPlayerDetailScreen extends StatefulWidget {
       _MusicPlayerDetailScreenState();
 }
 
-class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen> {
+class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _progressController = AnimationController(
+    vsync: this,
+    duration: const Duration(minutes: 1),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _progressController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -47,9 +59,51 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen> {
             ),
           ),
           const SizedBox(height: 50),
-          CustomPaint(
-            size: Size(size.width - 80, 5),
-            painter: ProgressBar(progressValue: size.width / 2),
+          AnimatedBuilder(
+            animation: _progressController,
+            builder: (context, child) {
+              return CustomPaint(
+                size: Size(size.width - 80, 5),
+                painter: ProgressBar(
+                  progressValue: _progressController.value,
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 10),
+          const Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 40,
+            ),
+            child: DefaultTextStyle(
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+              child: Row(
+                children: [
+                  Text('00:00'),
+                  Spacer(),
+                  Text('01:00'),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Yeonjae',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 5),
+          const Text(
+            'Many of life’s failures are people who did not realize how close they were to success when they gave up.– Thomas A. Edison',
+            style: TextStyle(fontSize: 18),
+            maxLines: 1,
+            overflow: TextOverflow.visible,
           )
         ],
       ),
@@ -63,6 +117,7 @@ class ProgressBar extends CustomPainter {
   ProgressBar({required this.progressValue});
   @override
   void paint(Canvas canvas, Size size) {
+    final progress = size.width * progressValue;
     // track
     final trackPaint = Paint()
       ..color = Colors.grey.shade300
@@ -86,7 +141,7 @@ class ProgressBar extends CustomPainter {
     final RRect progresskRect = RRect.fromLTRBR(
       0,
       0,
-      progressValue,
+      progress,
       size.height,
       const Radius.circular(10),
     );
@@ -95,7 +150,7 @@ class ProgressBar extends CustomPainter {
 
     // thumb
     canvas.drawCircle(
-      Offset(progressValue, size.height / 2),
+      Offset(progress, size.height / 2),
       10,
       progresskPaint,
     );
@@ -103,6 +158,6 @@ class ProgressBar extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant ProgressBar oldDelegate) {
-    return false;
+    return oldDelegate.progressValue != progressValue;
   }
 }
