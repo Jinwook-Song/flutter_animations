@@ -13,8 +13,24 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _progressController = AnimationController(
     vsync: this,
-    duration: const Duration(minutes: 1),
+    duration: Duration(seconds: _defaultPlayDuration),
   )..repeat(reverse: true);
+
+  final _defaultPlayDuration = 60;
+
+  List<String> _timeFormatter({required int seconds}) {
+    final duration = Duration(seconds: seconds);
+    final min = duration.toString().split('.').first.substring(2, 4);
+    final sec = duration.toString().split('.').first.substring(5);
+
+    final remainingDuration = Duration(seconds: _defaultPlayDuration - seconds);
+    final remainingMin =
+        remainingDuration.toString().split('.').first.substring(2, 4);
+    final remainingSec =
+        remainingDuration.toString().split('.').first.substring(5);
+
+    return ['$min:$sec', '$remainingMin:$remainingSec'];
+  }
 
   @override
   void dispose() {
@@ -71,22 +87,31 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
             },
           ),
           const SizedBox(height: 10),
-          const Padding(
-            padding: EdgeInsets.symmetric(
+          Padding(
+            padding: const EdgeInsets.symmetric(
               horizontal: 40,
             ),
             child: DefaultTextStyle(
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.grey,
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
-              child: Row(
-                children: [
-                  Text('00:00'),
-                  Spacer(),
-                  Text('01:00'),
-                ],
+              child: AnimatedBuilder(
+                animation: _progressController,
+                builder: (context, child) {
+                  final progress =
+                      _progressController.value * _defaultPlayDuration;
+                  final time = _timeFormatter(seconds: progress.round());
+
+                  return Row(
+                    children: [
+                      Text(time[0]),
+                      const Spacer(),
+                      Text(time[1]),
+                    ],
+                  );
+                },
               ),
             ),
           ),
