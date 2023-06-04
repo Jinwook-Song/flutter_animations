@@ -10,13 +10,24 @@ class MusicPlayerDetailScreen extends StatefulWidget {
 }
 
 class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
+  final _defaultPlayDuration = 60;
   late final AnimationController _progressController = AnimationController(
     vsync: this,
     duration: Duration(seconds: _defaultPlayDuration),
   )..repeat(reverse: true);
 
-  final _defaultPlayDuration = 60;
+  late final AnimationController _marqueeController = AnimationController(
+    vsync: this,
+    duration: const Duration(
+      seconds: 10,
+    ),
+  )..repeat(reverse: true);
+
+  late final Animation<Offset> _marqueeTween = Tween<Offset>(
+    begin: const Offset(0.1, 0),
+    end: const Offset(-1.6, 0),
+  ).animate(_marqueeController);
 
   List<String> _timeFormatter({required int seconds}) {
     final duration = Duration(seconds: seconds);
@@ -35,6 +46,7 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
   @override
   void dispose() {
     _progressController.dispose();
+    _marqueeController.dispose();
     super.dispose();
   }
 
@@ -124,11 +136,15 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
             ),
           ),
           const SizedBox(height: 5),
-          const Text(
-            'Many of life’s failures are people who did not realize how close they were to success when they gave up.– Thomas A. Edison',
-            style: TextStyle(fontSize: 18),
-            maxLines: 1,
-            overflow: TextOverflow.visible,
+          SlideTransition(
+            position: _marqueeTween,
+            child: const Text(
+              'Many of life’s failures are people who did not realize how close they were to success when they gave up.– Thomas A. Edison',
+              style: TextStyle(fontSize: 18),
+              maxLines: 1,
+              overflow: TextOverflow.visible,
+              softWrap: false,
+            ),
           )
         ],
       ),
