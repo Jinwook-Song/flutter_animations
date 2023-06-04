@@ -621,3 +621,47 @@
                     child: Container(color: Colors.black.withOpacity(0.5)),
                   ),
     ```
+  - ValueNotifier & ValueListenableBuilder
+    page정보를 값으로 저장하고, index와 비교를 통해 scale 조정
+    ```dart
+    final ValueNotifier<double> _scroll = ValueNotifier(0);
+
+      @override
+      void initState() {
+        super.initState();
+        _pageController.addListener(() {
+          if (_pageController.page == null) return;
+          _scroll.value = _pageController.page!;
+        });
+      }
+
+    ValueListenableBuilder(
+                        valueListenable: _scroll,
+                        builder: (context, scroll, child) {
+                          final difference = (scroll - index).abs();
+                          final scale = 1 - difference * 0.1;
+                          return Transform.scale(
+                            scale: scale,
+                            child: Container(
+                              height: 350,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.4),
+                                      blurRadius: 10,
+                                      spreadRadius: 2,
+                                      offset: const Offset(0, 8))
+                                ],
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage(
+                                    'assets/images/covers/yeonjae0$index.jpeg',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+    ```
