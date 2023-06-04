@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animations/screens/music_player_detail_screen.dart';
 
 class MusicPlaterScreen extends StatefulWidget {
   const MusicPlaterScreen({super.key});
@@ -22,6 +23,17 @@ class _MusicPlaterScreenState extends State<MusicPlaterScreen> {
     setState(() {
       _currentPage = page;
     });
+  }
+
+  void _onTap(int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MusicPlayerDetailScreen(
+          index: index,
+        ),
+      ),
+    );
   }
 
   @override
@@ -82,23 +94,29 @@ class _MusicPlaterScreenState extends State<MusicPlaterScreen> {
                     builder: (context, scroll, child) {
                       final difference = (scroll - index).abs();
                       final scale = 1 - difference * 0.1;
-                      return Transform.scale(
-                        scale: scale,
-                        child: Container(
-                          height: 350,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.4),
-                                  blurRadius: 10,
-                                  spreadRadius: 2,
-                                  offset: const Offset(0, 8))
-                            ],
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage(
-                                'assets/images/covers/yeonjae0$index.jpeg',
+                      return GestureDetector(
+                        onTap: () => _onTap(index),
+                        child: Hero(
+                          tag: '$index',
+                          child: Transform.scale(
+                            scale: scale,
+                            child: Container(
+                              height: 350,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.4),
+                                      blurRadius: 10,
+                                      spreadRadius: 2,
+                                      offset: const Offset(0, 8))
+                                ],
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage(
+                                    'assets/images/covers/yeonjae0$index.jpeg',
+                                  ),
+                                ),
                               ),
                             ),
                           ),
