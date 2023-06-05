@@ -24,6 +24,13 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     ),
   )..repeat(reverse: true);
 
+  late final AnimationController _playPauseController = AnimationController(
+    vsync: this,
+    duration: const Duration(
+      milliseconds: 500,
+    ),
+  );
+
   late final Animation<Offset> _marqueeTween = Tween<Offset>(
     begin: const Offset(0.1, 0),
     end: const Offset(-1.6, 0),
@@ -41,6 +48,14 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
         remainingDuration.toString().split('.').first.substring(5);
 
     return ['$min:$sec', '$remainingMin:$remainingSec'];
+  }
+
+  void _togglePlay() {
+    if (_playPauseController.isCompleted) {
+      _playPauseController.reverse();
+    } else {
+      _playPauseController.forward();
+    }
   }
 
   @override
@@ -144,6 +159,15 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
               maxLines: 1,
               overflow: TextOverflow.visible,
               softWrap: false,
+            ),
+          ),
+          const SizedBox(height: 30),
+          GestureDetector(
+            onTap: _togglePlay,
+            child: AnimatedIcon(
+              icon: AnimatedIcons.pause_play,
+              progress: _playPauseController,
+              size: 60,
             ),
           )
         ],
