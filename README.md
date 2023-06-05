@@ -526,7 +526,9 @@
     ```
 
 - Music Player
+
   - Album PageViewBuilder: _viewportFraction_: 0.8 값을 조정해 앞 뒤의 page도 보이도록
+
     ```dart
     import 'package:flutter/material.dart';
 
@@ -590,6 +592,7 @@
       }
     }
     ```
+
   - AnimatedSwitcher: Animate between old child and new child
     Container는 변경되지 않고 그 속성만 변하기 때문에 animation효과가 나타나지 않는다
     따라서 key를 부여하여 다른 child임을 명시할 수 있다
@@ -623,6 +626,7 @@
     ```
   - ValueNotifier & ValueListenableBuilder
     page정보를 값으로 저장하고, index와 비교를 통해 scale 조정
+
     ```dart
     final ValueNotifier<double> _scroll = ValueNotifier(0);
 
@@ -665,7 +669,9 @@
                         },
                       ),
     ```
+
   - AnimatedIcon
+
     ```dart
     AnimatedIcon(
                   icon: AnimatedIcons.pause_play,
@@ -673,3 +679,20 @@
                   size: 60,
                 ),
     ```
+
+  - Lottie
+
+  `flutter pub add lottie`
+
+  ```dart
+  Lottie.asset(
+                    'assets/animations/play-lottie.json',
+                    controller: _playPauseController,
+                    onLoaded: (composition) {
+                      _playPauseController.duration = composition.duration;
+                      // ..forward();
+                    },
+                    width: 200,
+                    height: 200,
+                  ),
+  ```

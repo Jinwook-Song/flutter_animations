@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class MusicPlayerDetailScreen extends StatefulWidget {
   final int index;
@@ -164,10 +165,25 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
           const SizedBox(height: 30),
           GestureDetector(
             onTap: _togglePlay,
-            child: AnimatedIcon(
-              icon: AnimatedIcons.pause_play,
-              progress: _playPauseController,
-              size: 60,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedIcon(
+                  icon: AnimatedIcons.play_pause,
+                  progress: _playPauseController,
+                  size: 60,
+                ),
+                Lottie.asset(
+                  'assets/animations/play-lottie.json',
+                  controller: _playPauseController,
+                  onLoaded: (composition) {
+                    _playPauseController.duration = composition.duration;
+                    // ..forward();
+                  },
+                  width: 200,
+                  height: 200,
+                ),
+              ],
             ),
           )
         ],
