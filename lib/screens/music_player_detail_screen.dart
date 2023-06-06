@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 class MusicPlayerDetailScreen extends StatefulWidget {
   final int index;
@@ -59,6 +58,23 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     }
   }
 
+  bool _dragging = false;
+  void _toggleDragging(dynamic _) {
+    setState(() {
+      _dragging = !_dragging;
+    });
+  }
+
+  final ValueNotifier<double> _volume = ValueNotifier(0);
+  late final size = MediaQuery.of(context).size;
+
+  void _onVolumeDragUpdate(DragUpdateDetails details) {
+    _volume.value += details.delta.dx;
+    _volume.value = _volume.value.clamp(0, size.width - 80);
+  }
+
+  void _openMenu() {}
+
   @override
   void dispose() {
     _progressController.dispose();
@@ -68,10 +84,15 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Yeonjae'),
+        actions: [
+          IconButton(
+            onPressed: _openMenu,
+            icon: const Icon(Icons.menu),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -165,25 +186,36 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
           const SizedBox(height: 30),
           GestureDetector(
             onTap: _togglePlay,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AnimatedIcon(
-                  icon: AnimatedIcons.play_pause,
-                  progress: _playPauseController,
-                  size: 60,
+            child: AnimatedIcon(
+              icon: AnimatedIcons.play_pause,
+              progress: _playPauseController,
+              size: 60,
+            ),
+          ),
+          const SizedBox(height: 30),
+          GestureDetector(
+            onHorizontalDragUpdate: _onVolumeDragUpdate,
+            onHorizontalDragStart: _toggleDragging,
+            onHorizontalDragEnd: _toggleDragging,
+            child: AnimatedScale(
+              scale: _dragging ? 1.05 : 1,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.bounceOut,
+              child: Container(
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                Lottie.asset(
-                  'assets/animations/play-lottie.json',
-                  controller: _playPauseController,
-                  onLoaded: (composition) {
-                    _playPauseController.duration = composition.duration;
-                    // ..forward();
+                child: ValueListenableBuilder(
+                  valueListenable: _volume,
+                  builder: (context, value, child) {
+                    return CustomPaint(
+                      size: Size(size.width - 80, 50),
+                      painter: VolumePaint(volume: value),
+                    );
                   },
-                  width: 200,
-                  height: 200,
                 ),
-              ],
+              ),
             ),
           )
         ],
@@ -240,5 +272,29 @@ class ProgressBar extends CustomPainter {
   @override
   bool shouldRepaint(covariant ProgressBar oldDelegate) {
     return oldDelegate.progressValue != progressValue;
+  }
+}
+
+class VolumePaint extends CustomPainter {
+  final double volume;
+
+  VolumePaint({required this.volume});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // bg
+    final bgPaint = Paint()..color = Colors.grey.shade300;
+    final bgRect = Rect.fromLTWH(0, 0, size.width, size.height);
+    canvas.drawRect(bgRect, bgPaint);
+
+    // volume
+    final volumePaint = Paint()..color = Colors.grey.shade500;
+    final volumeRect = Rect.fromLTWH(0, 0, volume, size.height);
+    canvas.drawRect(volumeRect, volumePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant VolumePaint oldDelegate) {
+    return oldDelegate.volume != volume;
   }
 }
