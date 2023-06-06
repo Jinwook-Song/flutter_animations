@@ -39,7 +39,7 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
   late final AnimationController _menuController = AnimationController(
     vsync: this,
     duration: const Duration(
-      seconds: 3,
+      milliseconds: 2500,
     ),
     reverseDuration: const Duration(
       seconds: 1,

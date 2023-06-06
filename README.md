@@ -526,7 +526,9 @@
     ```
 
 - Music Player
+
   - Album PageViewBuilder: _viewportFraction_: 0.8 값을 조정해 앞 뒤의 page도 보이도록
+
     ```dart
     import 'package:flutter/material.dart';
 
@@ -590,6 +592,7 @@
       }
     }
     ```
+
   - AnimatedSwitcher: Animate between old child and new child
     Container는 변경되지 않고 그 속성만 변하기 때문에 animation효과가 나타나지 않는다
     따라서 key를 부여하여 다른 child임을 명시할 수 있다
@@ -623,6 +626,7 @@
     ```
   - ValueNotifier & ValueListenableBuilder
     page정보를 값으로 저장하고, index와 비교를 통해 scale 조정
+
     ```dart
     final ValueNotifier<double> _scroll = ValueNotifier(0);
 
@@ -665,6 +669,7 @@
                         },
                       ),
     ```
+
   - AnimatedIcon
     ```dart
     AnimatedIcon(
@@ -687,8 +692,11 @@
                       height: 200,
                     ),
     ```
+
 - CoveredMenu
+
   - staggered animation: 애니메이션이 동시에 실행되지 않고 순차적으로 실행 ([docs](https://docs.flutter.dev/ui/animations/staggered-animations))
+
   ```dart
   late final AnimationController _menuController = AnimationController(
       vsync: this,
@@ -726,4 +734,76 @@
         ),
       ),
     );
+  ```
+
+- Rive (Library)
+  `flutter pub add rive`
+  [docs](https://rive.app/)
+  ```dart
+  import 'package:flutter/material.dart';
+  import 'package:rive/rive.dart';
+
+  class RiveScreen extends StatefulWidget {
+    const RiveScreen({super.key});
+
+    @override
+    State<RiveScreen> createState() => _RiveScreenState();
+  }
+
+  class _RiveScreenState extends State<RiveScreen> {
+    late final StateMachineController _stateMachineController;
+
+    void _onInit(Artboard artboard) {
+      _stateMachineController = StateMachineController.fromArtboard(
+        artboard,
+        'State Machine 1',
+      )!;
+      // artboard is just a canvas
+      artboard.addController(_stateMachineController);
+    }
+
+    void _togglePanel() {
+      final input = _stateMachineController.findInput<bool>('panelActive')!;
+
+      input.change(!input.value);
+    }
+
+    @override
+    void dispose() {
+      _stateMachineController.dispose();
+      super.dispose();
+    }
+
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Rive'),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: double.infinity,
+                height: 400,
+                child: RiveAnimation.asset(
+                  'assets/animations/sample-rive.riv',
+                  artboard: 'Dwarf Panel',
+                  stateMachines: const ['State Machine 1'],
+                  onInit: _onInit,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                onPressed: _togglePanel,
+                child: const Text('Go!'),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+  }
   ```
