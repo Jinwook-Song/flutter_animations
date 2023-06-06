@@ -526,9 +526,7 @@
     ```
 
 - Music Player
-
   - Album PageViewBuilder: _viewportFraction_: 0.8 값을 조정해 앞 뒤의 page도 보이도록
-
     ```dart
     import 'package:flutter/material.dart';
 
@@ -592,7 +590,6 @@
       }
     }
     ```
-
   - AnimatedSwitcher: Animate between old child and new child
     Container는 변경되지 않고 그 속성만 변하기 때문에 animation효과가 나타나지 않는다
     따라서 key를 부여하여 다른 child임을 명시할 수 있다
@@ -626,7 +623,6 @@
     ```
   - ValueNotifier & ValueListenableBuilder
     page정보를 값으로 저장하고, index와 비교를 통해 scale 조정
-
     ```dart
     final ValueNotifier<double> _scroll = ValueNotifier(0);
 
@@ -669,9 +665,7 @@
                         },
                       ),
     ```
-
   - AnimatedIcon
-
     ```dart
     AnimatedIcon(
                   icon: AnimatedIcons.pause_play,
@@ -679,20 +673,57 @@
                   size: 60,
                 ),
     ```
-
   - Lottie
-
-  `flutter pub add lottie`
-
+    `flutter pub add lottie`
+    ```dart
+    Lottie.asset(
+                      'assets/animations/play-lottie.json',
+                      controller: _playPauseController,
+                      onLoaded: (composition) {
+                        _playPauseController.duration = composition.duration;
+                        // ..forward();
+                      },
+                      width: 200,
+                      height: 200,
+                    ),
+    ```
+- CoveredMenu
+  - staggered animation: 애니메이션이 동시에 실행되지 않고 순차적으로 실행 ([docs](https://docs.flutter.dev/ui/animations/staggered-animations))
   ```dart
-  Lottie.asset(
-                    'assets/animations/play-lottie.json',
-                    controller: _playPauseController,
-                    onLoaded: (composition) {
-                      _playPauseController.duration = composition.duration;
-                      // ..forward();
-                    },
-                    width: 200,
-                    height: 200,
-                  ),
+  late final AnimationController _menuController = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        seconds: 1,
+      ),
+    );
+
+    final Curve _menuCurve = Curves.easeInOutCubic;
+
+    late final Animation<double> _screenScale = Tween(
+      begin: 1.0,
+      end: 0.7,
+    ).animate(
+      CurvedAnimation(
+        parent: _menuController,
+        curve: Interval(
+          0,
+          0.5,
+          curve: _menuCurve,
+        ),
+      ),
+    );
+
+    late final Animation<Offset> _screenOffeset = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(20 / 70, 0),
+    ).animate(
+      CurvedAnimation(
+        parent: _menuController,
+        curve: Interval(
+          0.5,
+          1,
+          curve: _menuCurve,
+        ),
+      ),
+    );
   ```
