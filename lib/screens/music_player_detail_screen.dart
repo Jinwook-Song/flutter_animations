@@ -31,6 +31,13 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     ),
   );
 
+  late final AnimationController _menuController = AnimationController(
+    vsync: this,
+    duration: const Duration(
+      seconds: 5,
+    ),
+  );
+
   late final Animation<Offset> _marqueeTween = Tween<Offset>(
     begin: const Offset(0.1, 0),
     end: const Offset(-1.6, 0),
@@ -73,153 +80,240 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     _volume.value = _volume.value.clamp(0, size.width - 80);
   }
 
-  void _openMenu() {}
+  void _openMenu() {
+    _menuController.forward();
+  }
+
+  void _closeMenu() {
+    _menuController.reverse();
+  }
 
   @override
   void dispose() {
     _progressController.dispose();
     _marqueeController.dispose();
+    _playPauseController.dispose();
+    _menuController.dispose();
     super.dispose();
   }
 
+  final List<Map<String, dynamic>> _menus = [
+    {
+      'icon': Icons.person,
+      'text': 'Profile',
+    },
+    {
+      'icon': Icons.notifications,
+      'text': 'Notifications',
+    },
+    {
+      'icon': Icons.settings,
+      'text': 'Settings',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Yeonjae'),
-        actions: [
-          IconButton(
-            onPressed: _openMenu,
-            icon: const Icon(Icons.menu),
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            title: const Text('Yeonjae'),
+            actions: [
+              IconButton(
+                onPressed: _openMenu,
+                icon: const Icon(Icons.menu),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          const SizedBox(height: 30),
-          Align(
-            alignment: Alignment.center,
-            child: Hero(
-              tag: '${widget.index}',
-              child: Container(
-                width: 350,
-                height: 350,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.4),
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                        offset: const Offset(0, 8))
-                  ],
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage(
-                      'assets/images/covers/yeonjae0${widget.index}.jpeg',
+          body: Column(
+            children: [
+              const SizedBox(height: 30),
+              Align(
+                alignment: Alignment.center,
+                child: Hero(
+                  tag: '${widget.index}',
+                  child: Container(
+                    width: 350,
+                    height: 350,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.4),
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                            offset: const Offset(0, 8))
+                      ],
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage(
+                          'assets/images/covers/yeonjae0${widget.index}.jpeg',
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(height: 50),
-          AnimatedBuilder(
-            animation: _progressController,
-            builder: (context, child) {
-              return CustomPaint(
-                size: Size(size.width - 80, 5),
-                painter: ProgressBar(
-                  progressValue: _progressController.value,
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 40,
-            ),
-            child: DefaultTextStyle(
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-              child: AnimatedBuilder(
+              const SizedBox(height: 50),
+              AnimatedBuilder(
                 animation: _progressController,
                 builder: (context, child) {
-                  final progress =
-                      _progressController.value * _defaultPlayDuration;
-                  final time = _timeFormatter(seconds: progress.round());
-
-                  return Row(
-                    children: [
-                      Text(time[0]),
-                      const Spacer(),
-                      Text(time[1]),
-                    ],
+                  return CustomPaint(
+                    size: Size(size.width - 80, 5),
+                    painter: ProgressBar(
+                      progressValue: _progressController.value,
+                    ),
                   );
                 },
               ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'Yeonjae',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 5),
-          SlideTransition(
-            position: _marqueeTween,
-            child: const Text(
-              'Many of life’s failures are people who did not realize how close they were to success when they gave up.– Thomas A. Edison',
-              style: TextStyle(fontSize: 18),
-              maxLines: 1,
-              overflow: TextOverflow.visible,
-              softWrap: false,
-            ),
-          ),
-          const SizedBox(height: 30),
-          GestureDetector(
-            onTap: _togglePlay,
-            child: AnimatedIcon(
-              icon: AnimatedIcons.play_pause,
-              progress: _playPauseController,
-              size: 60,
-            ),
-          ),
-          const SizedBox(height: 30),
-          GestureDetector(
-            onHorizontalDragUpdate: _onVolumeDragUpdate,
-            onHorizontalDragStart: _toggleDragging,
-            onHorizontalDragEnd: _toggleDragging,
-            child: AnimatedScale(
-              scale: _dragging ? 1.05 : 1,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.bounceOut,
-              child: Container(
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
                 ),
-                child: ValueListenableBuilder(
-                  valueListenable: _volume,
-                  builder: (context, value, child) {
-                    return CustomPaint(
-                      size: Size(size.width - 80, 50),
-                      painter: VolumePaint(volume: value),
-                    );
-                  },
+                child: DefaultTextStyle(
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  child: AnimatedBuilder(
+                    animation: _progressController,
+                    builder: (context, child) {
+                      final progress =
+                          _progressController.value * _defaultPlayDuration;
+                      final time = _timeFormatter(seconds: progress.round());
+
+                      return Row(
+                        children: [
+                          Text(time[0]),
+                          const Spacer(),
+                          Text(time[1]),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
+              const SizedBox(height: 20),
+              const Text(
+                'Yeonjae',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 5),
+              SlideTransition(
+                position: _marqueeTween,
+                child: const Text(
+                  'Many of life’s failures are people who did not realize how close they were to success when they gave up.– Thomas A. Edison',
+                  style: TextStyle(fontSize: 18),
+                  maxLines: 1,
+                  overflow: TextOverflow.visible,
+                  softWrap: false,
+                ),
+              ),
+              const SizedBox(height: 30),
+              GestureDetector(
+                onTap: _togglePlay,
+                child: AnimatedIcon(
+                  icon: AnimatedIcons.play_pause,
+                  progress: _playPauseController,
+                  size: 60,
+                ),
+              ),
+              const SizedBox(height: 30),
+              GestureDetector(
+                onHorizontalDragUpdate: _onVolumeDragUpdate,
+                onHorizontalDragStart: _toggleDragging,
+                onHorizontalDragEnd: _toggleDragging,
+                child: AnimatedScale(
+                  scale: _dragging ? 1.05 : 1,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.bounceOut,
+                  child: Container(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ValueListenableBuilder(
+                      valueListenable: _volume,
+                      builder: (context, value, child) {
+                        return CustomPaint(
+                          size: Size(size.width - 80, 50),
+                          painter: VolumePaint(volume: value),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            leading: IconButton(
+              onPressed: _closeMenu,
+              icon: const Icon(
+                Icons.close,
+                color: Colors.white,
+              ),
             ),
-          )
-        ],
-      ),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              children: [
+                const SizedBox(height: 30),
+                for (var menu in _menus) ...[
+                  Row(
+                    children: [
+                      Icon(
+                        menu['icon'],
+                        color: Colors.grey.shade200,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        menu['text'],
+                        style: TextStyle(
+                          color: Colors.grey.shade200,
+                          fontSize: 18,
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                ],
+                const Spacer(),
+                const Row(
+                  children: [
+                    Icon(
+                      Icons.logout,
+                      color: Colors.red,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      'Log out',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 100,
+                )
+              ],
+            ),
+          ),
+        )
+      ],
     );
   }
 }
