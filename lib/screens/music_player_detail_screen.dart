@@ -39,6 +39,9 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
   late final AnimationController _menuController = AnimationController(
     vsync: this,
     duration: const Duration(
+      seconds: 3,
+    ),
+    reverseDuration: const Duration(
       seconds: 1,
     ),
   );
@@ -53,7 +56,7 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
       parent: _menuController,
       curve: Interval(
         0,
-        0.5,
+        0.3,
         curve: _menuCurve,
       ),
     ),
@@ -66,12 +69,55 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     CurvedAnimation(
       parent: _menuController,
       curve: Interval(
-        0.5,
-        1,
+        0.2,
+        0.4,
         curve: _menuCurve,
       ),
     ),
   );
+
+  late final Animation<double> _closeButtonOpacity =
+      Tween<double>(begin: 0, end: 1).animate(
+    CurvedAnimation(
+      parent: _menuController,
+      curve: Interval(
+        0.3,
+        0.6,
+        curve: _menuCurve,
+      ),
+    ),
+  );
+
+  late final List<Animation<Offset>> _menuItemSlides = [
+    for (var i = 0; i < _menus.length; i++)
+      Tween<Offset>(
+        begin: const Offset(-1, 0),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(
+          parent: _menuController,
+          curve: Interval(
+            0.4 + (0.1 * i),
+            0.7 + (0.1 * i),
+            curve: _menuCurve,
+          ),
+        ),
+      ),
+    // logout
+    Tween<Offset>(
+      begin: const Offset(-1, 0),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _menuController,
+        curve: Interval(
+          0.8,
+          1.0,
+          curve: _menuCurve,
+        ),
+      ),
+    )
+  ];
 
   List<String> _timeFormatter({required int seconds}) {
     final duration = Duration(seconds: seconds);
@@ -129,14 +175,17 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
 
   final List<Map<String, dynamic>> _menus = [
     {
+      'index': 0,
       'icon': Icons.person,
       'text': 'Profile',
     },
     {
+      'index': 1,
       'icon': Icons.notifications,
       'text': 'Notifications',
     },
     {
+      'index': 2,
       'icon': Icons.settings,
       'text': 'Settings',
     },
@@ -150,11 +199,14 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
           backgroundColor: Colors.black,
           appBar: AppBar(
             backgroundColor: Colors.black,
-            leading: IconButton(
-              onPressed: _closeMenu,
-              icon: const Icon(
-                Icons.close,
-                color: Colors.white,
+            leading: FadeTransition(
+              opacity: _closeButtonOpacity,
+              child: IconButton(
+                onPressed: _closeMenu,
+                icon: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -164,40 +216,46 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
               children: [
                 const SizedBox(height: 30),
                 for (var menu in _menus) ...[
-                  Row(
-                    children: [
-                      Icon(
-                        menu['icon'],
-                        color: Colors.grey.shade200,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        menu['text'],
-                        style: TextStyle(
+                  SlideTransition(
+                    position: _menuItemSlides[menu['index']],
+                    child: Row(
+                      children: [
+                        Icon(
+                          menu['icon'],
                           color: Colors.grey.shade200,
-                          fontSize: 18,
                         ),
-                      )
-                    ],
+                        const SizedBox(width: 10),
+                        Text(
+                          menu['text'],
+                          style: TextStyle(
+                            color: Colors.grey.shade200,
+                            fontSize: 18,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 30),
                 ],
                 const Spacer(),
-                const Row(
-                  children: [
-                    Icon(
-                      Icons.logout,
-                      color: Colors.red,
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      'Log out',
-                      style: TextStyle(
+                SlideTransition(
+                  position: _menuItemSlides[3],
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.logout,
                         color: Colors.red,
-                        fontSize: 18,
                       ),
-                    ),
-                  ],
+                      SizedBox(width: 10),
+                      Text(
+                        'Log out',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(
                   height: 100,
