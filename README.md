@@ -840,3 +840,29 @@
                           ),
                         ),
       ```
+  - PageTransitionSwitcher
+    ```dart
+    PageTransitionSwitcher(
+              transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
+                  SharedAxisTransition(
+                animation: primaryAnimation,
+                secondaryAnimation: secondaryAnimation,
+                transitionType: SharedAxisTransitionType.horizontal,
+                child: child,
+              ),
+              child: AspectRatio(
+                key: ValueKey(_currentImage),
+                aspectRatio: 1,
+                child: Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: Image.asset(
+                    'assets/images/covers/yeonjae0${_currentImage % 10}.jpeg',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+    ```

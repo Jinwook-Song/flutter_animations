@@ -7,6 +7,7 @@ import 'package:flutter_animations/screens/implicit_animations_screen.dart';
 import 'package:flutter_animations/screens/music_player_screen.dart';
 import 'package:flutter_animations/screens/rating_screen.dart';
 import 'package:flutter_animations/screens/rive_screen.dart';
+import 'package:flutter_animations/screens/shared_axis_screen.dart';
 import 'package:flutter_animations/screens/swiping_cards_screen.dart';
 import 'package:flutter_animations/screens/wiggle_btn_screen.dart';
 
@@ -120,6 +121,15 @@ class MenuScreen extends StatelessWidget {
               },
               child: const Text(
                 'Container Transform',
+              ),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                _goToPage(context, const SharedAxisScreen());
+              },
+              child: const Text(
+                'Shared Axis',
               ),
             ),
           ],
