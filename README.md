@@ -840,7 +840,7 @@
                           ),
                         ),
       ```
-  - PageTransitionSwitcher
+  - PageTransitionSwitcher-SharedAxisTransition
     ```dart
     PageTransitionSwitcher(
               transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
@@ -865,4 +865,28 @@
                 ),
               ),
             ),
+    ```
+  - PageTransitionSwitcher-FadeThroughTransition
+    ```dart
+    PageTransitionSwitcher(
+            duration: const Duration(seconds: 1),
+            transitionBuilder: (child, primaryAnimation, secondaryAnimation) =>
+                FadeThroughTransition(
+              animation: primaryAnimation,
+              secondaryAnimation: secondaryAnimation,
+              child: child,
+            ),
+            child: [
+              const NavigationPage(
+                  key: ValueKey('Profile'), text: 'Profile', icon: Icons.person),
+              const NavigationPage(
+                  key: ValueKey('Notifications'),
+                  text: 'Notifications',
+                  icon: Icons.notifications),
+              const NavigationPage(
+                  key: ValueKey('Settings'),
+                  text: 'Settings',
+                  icon: Icons.settings),
+            ][_navIndex],
+          ),
     ```

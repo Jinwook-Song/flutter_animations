@@ -3,6 +3,7 @@ import 'package:flutter_animations/screens/apple_watch_screen.dart';
 import 'package:flutter_animations/screens/balls_screen.dart';
 import 'package:flutter_animations/screens/container_transform_screen.dart';
 import 'package:flutter_animations/screens/explicit_animations_screen.dart';
+import 'package:flutter_animations/screens/fade_through_screen.dart';
 import 'package:flutter_animations/screens/implicit_animations_screen.dart';
 import 'package:flutter_animations/screens/music_player_screen.dart';
 import 'package:flutter_animations/screens/rating_screen.dart';
@@ -130,6 +131,15 @@ class MenuScreen extends StatelessWidget {
               },
               child: const Text(
                 'Shared Axis',
+              ),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                _goToPage(context, const FadeThroughScreen());
+              },
+              child: const Text(
+                'Fade Through',
               ),
             ),
           ],
