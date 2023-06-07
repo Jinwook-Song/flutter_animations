@@ -739,6 +739,7 @@
 - Rive (Library)
   `flutter pub add rive`
   [docs](https://rive.app/)
+
   ```dart
   import 'package:flutter/material.dart';
   import 'package:rive/rive.dart';
@@ -807,3 +808,35 @@
     }
   }
   ```
+
+- Material Animations
+  `flutter pub add animations`
+  - OpenContainer
+    - closedBuilder, openBuilder
+      ```dart
+      OpenContainer(
+                          closedElevation: 0,
+                          openElevation: 0,
+                          transitionDuration: const Duration(seconds: 1),
+                          closedBuilder: (context, action) => ListTile(
+                            leading: Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage(
+                                      'assets/images/covers/yeonjae0${index % 10}.jpeg'),
+                                ),
+                              ),
+                            ),
+                            title: const Text('Dune sound track'),
+                            subtitle: const Text('Hans zimmer'),
+                            trailing: const Icon(Icons.arrow_forward_ios),
+                          ),
+                          openBuilder: (context, action) => DetailScreen(
+                            imageIndex: index,
+                          ),
+                        ),
+      ```
