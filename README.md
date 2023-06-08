@@ -933,3 +933,28 @@
                 .slideX(begin: 0, end: -1, duration: 1.seconds),
           ),
     ```
+  - AnimateList
+    ```dart
+    AnimateList(
+                interval: 0.5.seconds,
+                effects: [
+                  SlideEffect(
+                    begin: const Offset(-1, 0),
+                    end: Offset.zero,
+                    duration: 0.5.seconds,
+                    curve: Curves.easeOut,
+                  ),
+                  FadeEffect(
+                    begin: 0,
+                    end: 1,
+                    duration: 0.5.seconds,
+                    curve: Curves.ease,
+                  )
+                ],
+                children: [
+                  const CreditCard(bgColor: Colors.pink),
+                  const CreditCard(bgColor: Colors.black),
+                  const CreditCard(bgColor: Colors.purple),
+                ],
+              ),
+    ```
