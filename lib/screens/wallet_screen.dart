@@ -16,28 +16,15 @@ class _WalletScreenState extends State<WalletScreen> {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
-          children: AnimateList(
-            interval: 0.5.seconds,
-            effects: [
-              SlideEffect(
-                begin: const Offset(-1, 0),
-                end: Offset.zero,
-                duration: 0.5.seconds,
-                curve: Curves.easeOut,
-              ),
-              FadeEffect(
-                begin: 0,
-                end: 1,
-                duration: 0.5.seconds,
-                curve: Curves.ease,
-              )
-            ],
-            children: [
-              const CreditCard(bgColor: Colors.pink),
-              const CreditCard(bgColor: Colors.black),
-              const CreditCard(bgColor: Colors.purple),
-            ],
-          ),
+          children: [
+            const CreditCard(bgColor: Colors.pink),
+            const CreditCard(bgColor: Colors.black),
+            const CreditCard(bgColor: Colors.purple),
+          ]
+              .animate(interval: 1.seconds)
+              .slideX(
+                  begin: -1, end: 0, duration: 1.seconds, curve: Curves.easeOut)
+              .fadeIn(duration: 1.seconds, curve: Curves.easeOut),
         ),
       ),
     );

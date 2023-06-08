@@ -958,3 +958,16 @@
                 ],
               ),
     ```
+  - Animate Syntax with interval
+    AnimateList와 동일한 효과를 줄 수 있다
+    ```dart
+    children: [
+                const CreditCard(bgColor: Colors.pink),
+                const CreditCard(bgColor: Colors.black),
+                const CreditCard(bgColor: Colors.purple),
+              ]
+                  .animate(interval: 1.seconds)
+                  .slideX(
+                      begin: -1, end: 0, duration: 1.seconds, curve: Curves.easeOut)
+                  .fadeIn(duration: 1.seconds, curve: Curves.easeOut),
+    ```
