@@ -918,3 +918,18 @@
               style: TextStyle(fontSize: 60),
             ),
     ```
+  - Animate Syntax
+    모든 위젯에 적용하 할 수 있다
+    ```dart
+    Text(
+              'Hello',
+              style: TextStyle(fontSize: 60),
+            )
+                .animate()
+                .fadeIn(duration: 1.seconds)
+                .scale(end: const Offset(2, 2), duration: 1.seconds)
+                .then(delay: 1.seconds)
+                .fadeOut(duration: 1.seconds)
+                .slideX(begin: 0, end: -1, duration: 1.seconds),
+          ),
+    ```
