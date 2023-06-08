@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+List<Color> colors = [
+  Colors.pink,
+  Colors.black,
+  Colors.purple,
+];
+
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
 
@@ -9,17 +15,17 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
-  bool _expanded = false;
+  bool _isExpanded = false;
 
   void _onExpand() {
     setState(() {
-      _expanded = true;
+      _isExpanded = true;
     });
   }
 
   void _onShrink(DragEndDetails _) {
     setState(() {
-      _expanded = false;
+      _isExpanded = false;
     });
   }
 
@@ -34,17 +40,14 @@ class _WalletScreenState extends State<WalletScreen> {
           onTap: _onExpand,
           child: Column(
             children: [
-              const CreditCard(bgColor: Colors.pink)
-                  .animate(delay: 3.seconds, target: _expanded ? 0 : 1)
-                  .flipV(end: 10 / 180),
-              const CreditCard(bgColor: Colors.black)
-                  .animate(delay: 3.seconds, target: _expanded ? 0 : 1)
-                  .flipV(end: 10 / 180)
-                  .slideY(begin: 0, end: -0.8, curve: Curves.easeOut),
-              const CreditCard(bgColor: Colors.purple)
-                  .animate(delay: 3.seconds, target: _expanded ? 0 : 1)
-                  .flipV(end: 10 / 180)
-                  .slideY(begin: 0, end: -0.8 * 2, curve: Curves.easeOut),
+              for (var index in [0, 1, 2])
+                CreditCard(
+                  index: index,
+                  isExpanded: _isExpanded,
+                )
+                    .animate(delay: 3.seconds, target: _isExpanded ? 0 : 1)
+                    .flipV(end: 10 / 180)
+                    .slideY(begin: 0, end: -0.8 * index, curve: Curves.easeOut),
             ]
                 .animate(interval: 1.seconds)
                 .slideX(
@@ -61,81 +64,114 @@ class _WalletScreenState extends State<WalletScreen> {
 }
 
 class CreditCard extends StatelessWidget {
-  final Color bgColor;
+  final int index;
+  final bool isExpanded;
   const CreditCard({
     super.key,
-    required this.bgColor,
+    required this.index,
+    required this.isExpanded,
+  });
+
+  void _onTap() {
+    print('tapped');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AbsorbPointer(
+      absorbing: !isExpanded,
+      child: GestureDetector(
+        onTap: _onTap,
+        child: Container(
+          width: double.maxFinite,
+          margin: const EdgeInsets.only(bottom: 20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: colors[index],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30,
+              vertical: 40,
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 100),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Nomad Conders',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          '**** **** **26',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned(
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 20,
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.amber,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CardDetailScreen extends StatelessWidget {
+  final int index;
+  const CardDetailScreen({
+    super.key,
+    required this.index,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      margin: const EdgeInsets.only(bottom: 20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: bgColor,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 30,
-          vertical: 40,
+    return Scaffold(
+      appBar: AppBar(title: const Text('Transactions')),
+      body: Column(children: [
+        CreditCard(
+          index: index,
+          isExpanded: false,
         ),
-        child: Column(
-          children: [
-            const SizedBox(height: 100),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Nomad Conders',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      '**** **** **26',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-                Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Positioned(
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      right: 20,
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.amber,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            )
-          ],
-        ),
-      ),
+      ]),
     );
   }
 }

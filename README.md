@@ -971,3 +971,10 @@
                       begin: -1, end: 0, duration: 1.seconds, curve: Curves.easeOut)
                   .fadeIn(duration: 1.seconds, curve: Curves.easeOut),
     ```
+  - AbsorbPointer
+    GestureDetector가 중첩될 때,
+    AbosrbPointer를 통해 하위 위젯의 동작을 막을 수 있다.
+    ```dart
+    AbsorbPointer(
+          absorbing: isExpanded ? false : true,
+    ```
