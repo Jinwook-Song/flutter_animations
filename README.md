@@ -894,6 +894,7 @@
 
 - flutter_anmate
   `flutter pub add flutter_animate`
+  [docs](https://pub.dev/documentation/flutter_animate/latest/)
   - showcase
     https://gskinner.com/
     https://flutter.gskinner.com/vignettes/
