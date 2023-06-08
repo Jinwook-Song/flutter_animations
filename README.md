@@ -1,6 +1,6 @@
 # Flutter animations
 
-| 프로젝트 기간 | 23.05.17                                           |
+| 프로젝트 기간 | 23.05.17~23.06.08                                  |
 | ------------- | -------------------------------------------------- |
 | 프로젝트 목적 | flutter로 다양한 애니메이션 구현                   |
 | Github        | https://github.com/Jinwook-Song/flutter_animations |
@@ -54,12 +54,10 @@
 - Explicit Animations
   여러 위젯을 animation 하고싶은 경우,
   animation에 더 많은 통제를 하고싶은 경우(loop, pause, reverse, etc…)
-
   - SingleTickerProviderStateMixin
-    Ticker: call its callback once per animation frame
-    SingleTickerProviderStateMixin: only tick while the current tree is enabled
-    → 빠른 rebuild를 위해 Ticker를 사용하고, enable 상태에서만 활성화하도록
-
+  Ticker: call its callback once per animation frame
+  SingleTickerProviderStateMixin: only tick while the current tree is enabled
+  → 빠른 rebuild를 위해 Ticker를 사용하고, enable 상태에서만 활성화하도록
   ```dart
   import 'package:flutter/material.dart';
 
@@ -151,7 +149,6 @@
        }
      }
   ```
-
   - AnimatedBuilder
     animation이 바뀌는 부분만 새롭게 render
     ```dart
@@ -166,7 +163,6 @@
                      ),
     ```
   - Explicit Animations
-
     ```dart
     // Connect Tween and AnimationController
          late final Animation<Decoration> _decorationAnimation = DecorationTween(
@@ -212,7 +208,6 @@
                      ),
                    ),
     ```
-
   - Curve
     ```dart
     late final AnimationController _animationController = AnimationController(
@@ -229,7 +224,6 @@
   - ValueNotifier & ValueListenableBuilder
     animation 진행 상황을 render할때, setState를 이용하지 않고,
     ValueNotifier의 값을 변경하고, 이 변화된 값을 렌더해주는 ValueListenableBuilder를 이용하여 최적화 할 수 있다
-
     ```dart
     late final AnimationController _animationController = AnimationController(
         vsync: this,
@@ -256,10 +250,8 @@
                   },
                 )
     ```
-
   - AnimationStatus
     `foward`, `completed`, `reverse`, `dismissed` 에 따라 animation을 컨트롤 할 수 있다
-
     ```dart
     late final AnimationController _animationController = AnimationController(
         vsync: this,
@@ -290,10 +282,8 @@
         });
       }
     ```
-
 - Apple Watch
   animate custom painter
-
   ```dart
   import 'dart:math';
 
@@ -441,9 +431,7 @@
     }
   }
   ```
-
 - Swiping Cards
-
   ```dart
   import 'package:flutter/material.dart';
 
@@ -502,10 +490,8 @@
     }
   }
   ```
-
   - interpolation
     `transform`: Tween값을 lowerBound, uppderBound의 값의 범위로 바꿔준다.
-
     ```dart
     late final AnimationController _animationController = AnimationController(
         vsync: this,
@@ -524,11 +510,8 @@
                 (_animationController.value + size.width / 2) / size.width,
               );
     ```
-
 - Music Player
-
   - Album PageViewBuilder: _viewportFraction_: 0.8 값을 조정해 앞 뒤의 page도 보이도록
-
     ```dart
     import 'package:flutter/material.dart';
 
@@ -592,7 +575,6 @@
       }
     }
     ```
-
   - AnimatedSwitcher: Animate between old child and new child
     Container는 변경되지 않고 그 속성만 변하기 때문에 animation효과가 나타나지 않는다
     따라서 key를 부여하여 다른 child임을 명시할 수 있다
@@ -626,7 +608,6 @@
     ```
   - ValueNotifier & ValueListenableBuilder
     page정보를 값으로 저장하고, index와 비교를 통해 scale 조정
-
     ```dart
     final ValueNotifier<double> _scroll = ValueNotifier(0);
 
@@ -669,7 +650,6 @@
                         },
                       ),
     ```
-
   - AnimatedIcon
     ```dart
     AnimatedIcon(
@@ -692,11 +672,8 @@
                       height: 200,
                     ),
     ```
-
 - CoveredMenu
-
   - staggered animation: 애니메이션이 동시에 실행되지 않고 순차적으로 실행 ([docs](https://docs.flutter.dev/ui/animations/staggered-animations))
-
   ```dart
   late final AnimationController _menuController = AnimationController(
       vsync: this,
@@ -735,11 +712,9 @@
       ),
     );
   ```
-
 - Rive (Library)
   `flutter pub add rive`
   [docs](https://rive.app/)
-
   ```dart
   import 'package:flutter/material.dart';
   import 'package:rive/rive.dart';
@@ -808,10 +783,8 @@
     }
   }
   ```
-
 - Material Animations
   `flutter pub add animations`
-
   - OpenContainer
     - closedBuilder, openBuilder
       ```dart
@@ -891,7 +864,6 @@
             ][_navIndex],
           ),
     ```
-
 - flutter_anmate
   `flutter pub add flutter_animate`
   [docs](https://pub.dev/documentation/flutter_animate/latest/)
@@ -975,7 +947,3 @@
   - AbsorbPointer
     GestureDetector가 중첩될 때,
     AbosrbPointer를 통해 하위 위젯의 동작을 막을 수 있다.
-    ```dart
-    AbsorbPointer(
-          absorbing: isExpanded ? false : true,
-    ```
