@@ -811,6 +811,7 @@
 
 - Material Animations
   `flutter pub add animations`
+
   - OpenContainer
     - closedBuilder, openBuilder
       ```dart
@@ -889,4 +890,31 @@
                   icon: Icons.settings),
             ][_navIndex],
           ),
+    ```
+
+- flutter_anmate
+  `flutter pub add flutter_animate`
+  - showcase
+    https://gskinner.com/
+    https://flutter.gskinner.com/vignettes/
+  - Animate Widget
+    ```dart
+    Animate(
+            effects: [
+              FadeEffect(
+                begin: 0,
+                end: 1,
+                duration: 1.seconds,
+              ),
+              ScaleEffect(
+                alignment: Alignment.center,
+                begin: Offset.zero,
+                end: const Offset(1, 1),
+                duration: 1.seconds,
+              )
+            ],
+            child: const Text(
+              'Hello',
+              style: TextStyle(fontSize: 60),
+            ),
     ```

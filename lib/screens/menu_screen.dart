@@ -10,6 +10,7 @@ import 'package:flutter_animations/screens/rating_screen.dart';
 import 'package:flutter_animations/screens/rive_screen.dart';
 import 'package:flutter_animations/screens/shared_axis_screen.dart';
 import 'package:flutter_animations/screens/swiping_cards_screen.dart';
+import 'package:flutter_animations/screens/wallet_screen.dart';
 import 'package:flutter_animations/screens/wiggle_btn_screen.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -140,6 +141,15 @@ class MenuScreen extends StatelessWidget {
               },
               child: const Text(
                 'Fade Through',
+              ),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                _goToPage(context, const WalletScreen());
+              },
+              child: const Text(
+                'Wallet',
               ),
             ),
           ],
