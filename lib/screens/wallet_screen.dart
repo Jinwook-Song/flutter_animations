@@ -9,22 +9,51 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
+  bool _expanded = false;
+
+  void _onExpand() {
+    setState(() {
+      _expanded = true;
+    });
+  }
+
+  void _onShrink(DragEndDetails _) {
+    setState(() {
+      _expanded = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Wallet')),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const CreditCard(bgColor: Colors.pink),
-            const CreditCard(bgColor: Colors.black),
-            const CreditCard(bgColor: Colors.purple),
-          ]
-              .animate(interval: 1.seconds)
-              .slideX(
-                  begin: -1, end: 0, duration: 1.seconds, curve: Curves.easeOut)
-              .fadeIn(duration: 1.seconds, curve: Curves.easeOut),
+        child: GestureDetector(
+          onVerticalDragEnd: _onShrink,
+          onTap: _onExpand,
+          child: Column(
+            children: [
+              const CreditCard(bgColor: Colors.pink)
+                  .animate(delay: 3.seconds, target: _expanded ? 0 : 1)
+                  .flipV(end: 10 / 180),
+              const CreditCard(bgColor: Colors.black)
+                  .animate(delay: 3.seconds, target: _expanded ? 0 : 1)
+                  .flipV(end: 10 / 180)
+                  .slideY(begin: 0, end: -0.8, curve: Curves.easeOut),
+              const CreditCard(bgColor: Colors.purple)
+                  .animate(delay: 3.seconds, target: _expanded ? 0 : 1)
+                  .flipV(end: 10 / 180)
+                  .slideY(begin: 0, end: -0.8 * 2, curve: Curves.easeOut),
+            ]
+                .animate(interval: 1.seconds)
+                .slideX(
+                    begin: -1,
+                    end: 0,
+                    duration: 1.seconds,
+                    curve: Curves.easeOut)
+                .fadeIn(duration: 1.seconds, curve: Curves.easeOut),
+          ),
         ),
       ),
     );
