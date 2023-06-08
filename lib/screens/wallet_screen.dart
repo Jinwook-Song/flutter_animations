@@ -41,13 +41,17 @@ class _WalletScreenState extends State<WalletScreen> {
           child: Column(
             children: [
               for (var index in [0, 1, 2])
-                CreditCard(
-                  index: index,
-                  isExpanded: _isExpanded,
-                )
-                    .animate(delay: 3.seconds, target: _isExpanded ? 0 : 1)
-                    .flipV(end: 10 / 180)
-                    .slideY(begin: 0, end: -0.8 * index, curve: Curves.easeOut),
+                Hero(
+                  tag: '$index',
+                  child: CreditCard(
+                    index: index,
+                    isExpanded: _isExpanded,
+                  )
+                      .animate(delay: 3.seconds, target: _isExpanded ? 0 : 1)
+                      .flipV(end: 10 / 180)
+                      .slideY(
+                          begin: 0, end: -0.8 * index, curve: Curves.easeOut),
+                ),
             ]
                 .animate(interval: 1.seconds)
                 .slideX(
@@ -63,7 +67,7 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 }
 
-class CreditCard extends StatelessWidget {
+class CreditCard extends StatefulWidget {
   final int index;
   final bool isExpanded;
   const CreditCard({
@@ -72,81 +76,93 @@ class CreditCard extends StatelessWidget {
     required this.isExpanded,
   });
 
+  @override
+  State<CreditCard> createState() => _CreditCardState();
+}
+
+class _CreditCardState extends State<CreditCard> {
   void _onTap() {
-    print('tapped');
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CardDetailScreen(index: widget.index),
+            fullscreenDialog: true));
   }
 
   @override
   Widget build(BuildContext context) {
-    return AbsorbPointer(
-      absorbing: !isExpanded,
-      child: GestureDetector(
-        onTap: _onTap,
-        child: Container(
-          width: double.maxFinite,
-          margin: const EdgeInsets.only(bottom: 20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: colors[index],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 30,
-              vertical: 40,
+    return Material(
+      type: MaterialType.transparency,
+      child: AbsorbPointer(
+        absorbing: !widget.isExpanded,
+        child: GestureDetector(
+          onTap: _onTap,
+          child: Container(
+            width: double.maxFinite,
+            margin: const EdgeInsets.only(bottom: 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: colors[widget.index],
             ),
-            child: Column(
-              children: [
-                const SizedBox(height: 100),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Nomad Conders',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          '**** **** **26',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Positioned(
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.red,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 30,
+                vertical: 40,
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 100),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Nomad Conders',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
                             ),
                           ),
-                        ),
-                        Positioned(
-                          right: 20,
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.amber,
+                          Text(
+                            '**** **** **26',
+                            style: TextStyle(
+                              color: Colors.white,
                             ),
                           ),
-                        ),
-                      ],
-                    )
-                  ],
-                )
-              ],
+                        ],
+                      ),
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Positioned(
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            right: 20,
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.amber,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -166,12 +182,18 @@ class CardDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Transactions')),
-      body: Column(children: [
-        CreditCard(
-          index: index,
-          isExpanded: false,
-        ),
-      ]),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(children: [
+          Hero(
+            tag: '$index',
+            child: CreditCard(
+              index: index,
+              isExpanded: false,
+            ),
+          ),
+        ]),
+      ),
     );
   }
 }
